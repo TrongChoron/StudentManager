@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import thanhtrong.itsj.dto.StudentDTO;
 import thanhtrong.itsj.entity.Student;
+import thanhtrong.itsj.exception.InvalidException;
 import thanhtrong.itsj.exception.StudentAlreadyExistedException;
 import thanhtrong.itsj.exception.StudentNotFoundException;
 import thanhtrong.itsj.repository.StudentRepo;
@@ -55,7 +56,11 @@ public class StudentServiceImpl implements IStudentService {
             student.setAddress(studentDTO.getAddress());
             student.setPhone(studentDTO.getPhone());
             student.setBirthDay(studentDTO.getBirthDay());
-            studentRepo.save(student);
+            if(checkAge(student.getAge())) {
+                studentRepo.save(student);
+            }else {
+                throw new InvalidException("Student must in 18 - 80 years old!!!");
+            }
             return student;
         }
     }
@@ -78,6 +83,11 @@ public class StudentServiceImpl implements IStudentService {
         student.setAddress(studentDTO.getAddress());
         student.setPhone(studentDTO.getPhone());
         student.setBirthDay(studentDTO.getBirthDay());
+        if(checkAge(student.getAge())) {
+            studentRepo.save(student);
+        }else {
+            throw new InvalidException("Student must in 18 - 80 years old!!!");
+        }
         studentRepo.save(student);
         return student;
     }
@@ -105,5 +115,9 @@ public class StudentServiceImpl implements IStudentService {
                         5,
                         Sort.Direction.ASC, sortBy.orElse("id")
                 ));
+    }
+
+    private boolean checkAge(int age){
+        return age > 18 && age < 80;
     }
 }

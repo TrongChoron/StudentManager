@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import thanhtrong.itsj.exception.ErrorMessage;
+import thanhtrong.itsj.exception.InvalidException;
 import thanhtrong.itsj.exception.StudentAlreadyExistedException;
 import thanhtrong.itsj.exception.StudentNotFoundException;
 
@@ -32,5 +33,12 @@ public class ApiExceptionHandler {
     public ErrorMessage studentNotFound(Exception ex, WebRequest request) {
         // quá trình kiểm soat lỗi diễn ra ở đây
         return new ErrorMessage(404, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(InvalidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage invalidInput(Exception ex, WebRequest request) {
+        // quá trình kiểm soat lỗi diễn ra ở đây
+        return new ErrorMessage(400, ex.getLocalizedMessage());
     }
 }
